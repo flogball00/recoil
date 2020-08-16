@@ -12,3 +12,13 @@ export const formatRepositoryResponse = (response) => ({
     url: repo.html_url,
   })),
 });
+
+export const formatCommitResponse = (response) => {
+  return response.map((data) => ({
+    author: data.commit.author.name,
+    message: data.commit.message,
+    url: data.html_url,
+    date: data.commit.author.date,
+    sha: data.sha,
+  }));
+};

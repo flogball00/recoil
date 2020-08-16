@@ -10,10 +10,14 @@ export const organization = atom({
 export const getInitialRepositories = selector({
   key: "initial_repositories",
   get: async ({ get }) => {
-    const response = await githubClient(
-      `orgs/${get(organization)}/repos?direction=desc`
-    );
-    return formatRepositoryResponse(response);
+    try {
+      const response = await githubClient(
+        `orgs/${get(organization)}/repos?direction=desc`
+      );
+      return formatRepositoryResponse(response);
+    } catch (e) {
+      return e;
+    }
   },
 });
 
@@ -26,7 +30,7 @@ export const getNextPageRepositories = selectorFamily({
       );
       return formatRepositoryResponse(response);
     } catch (e) {
-      console.log(e);
+      return e;
     }
   },
 });

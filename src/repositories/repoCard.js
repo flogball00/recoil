@@ -1,9 +1,9 @@
-import React from "react";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import React, { useState } from "react";
+import { useParams } from "react-router-dom";
+import { makeStyles, createStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
-import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import Collapse from "@material-ui/core/Collapse";
@@ -17,7 +17,11 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Divider from "@material-ui/core/Divider";
 import LaunchIcon from "@material-ui/icons/Launch";
 import VisibilityIcon from "@material-ui/icons/Visibility";
-
+import { githubClient } from "../utils/api";
+import Progress from "../progress";
+import NotFound from "../notFound";
+import TimelineDisplay from "./timeline";
+import { formatCommitResponse } from "../utils/data-processing";
 const useStyles = makeStyles((theme) =>
   createStyles({
     root: {
@@ -49,9 +53,28 @@ const useStyles = makeStyles((theme) =>
 
 export default function RepoCard(props) {
   const classes = useStyles();
-  const [expanded, setExpanded] = React.useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const params = useParams();
+  const [commitData, setData] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const fetchData = async () => {
+    setIsLoading(true);
+    setError(null);
 
+    try {
+      const resp = await githubClient(
+        `repos/${params.org}/${props.name}/commits`
+      );
+      setData(formatCommitResponse(resp));
+      setIsLoading(false);
+    } catch (e) {
+      setError(e);
+      setIsLoading(false);
+    }
+  };
   const handleExpandClick = () => {
+    !expanded && fetchData();
     setExpanded(!expanded);
   };
   return (
@@ -89,7 +112,7 @@ export default function RepoCard(props) {
           color="textSecondary"
           component="p"
         >
-          {props.description}
+          {props.description ?? "No Description Available"}
         </Typography>
       </CardContent>
       <Divider />
@@ -122,52 +145,11 @@ export default function RepoCard(props) {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography paragraph>Method:</Typography>
-          <Typography paragraph>
-            Heat 1/2 cup of the broth in a pot until simmering, add saffron and
-            set aside for 10 minutes.
-          </Typography>
-          <Typography paragraph>
-            Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet
-            over medium-high heat. Add chicken, shrimp and chorizo, and cook,
-            stirring occasionally until lightly browned, 6 to 8 minutes.
-            Transfer shrimp to a large plate and set aside, leaving chicken and
-            chorizo in the pan. Add pimentón, bay leaves, garlic, tomatoes,
-            onion, salt and pepper, and cook, stirring often until thickened and
-            fragrant, about 10 minutes. Add saffron broth and remaining 4 1/2
-            cups chicken broth; bring to a boil.
-          </Typography>
-          <Typography paragraph>
-            Add rice and stir very gently to distribute. Top with artichokes and
-            peppers, and cook without stirring, until most of the liquid is
-            absorbed, 15 to 18 minutes. Reduce heat to medium-low, add reserved
-            shrimp and mussels, tucking them down into the rice, and cook again
-            without stirring, until mussels have opened and rice is just tender,
-            5 to 7 minutes more. (Discard any mussels that don’t open.)
-          </Typography>
-          <Typography>
-            Set aside off of the heat to let rest for 10 minutes, and then
-            serve.
-          </Typography>
+          {isLoading && <Progress />}
+          {error && <NotFound />}
+          <TimelineDisplay data={commitData} />
         </CardContent>
       </Collapse>
     </Card>
   );
 }
-
-// function RepoCard(props) {
-//   return (
-//     <div>
-//       <div>name: {props.name}</div>
-//       <div>owner: {props.owner.login}</div>
-//       <div>avatar_url: {props.owner.avatar_url}</div>
-//       <div>description: {props.description}</div>
-//       <div>stars: {props.stargazers_count}</div>
-//       <div>forks: {props.forks}</div>
-//       <div>watchers: {props.watchers}</div>
-//       <div>created: {props.created_at}</div>
-//       <div>updated_at: {props.updated_at}</div>
-//       <div>url: {props.url}</div>
-//     </div>
-//   );
-// }
