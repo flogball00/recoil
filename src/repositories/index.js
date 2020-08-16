@@ -8,12 +8,13 @@ import { useRecoilValueLoadable, useRecoilState, useRecoilValue } from "recoil";
 import RepoCard from "./repoCard";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Search from "../search";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import RepositoryPagination from "./repositoryPagination";
-import queryString from "query-string";
+import Progress from "../progress";
+
 const useStyles = makeStyles({
   cardContainer: {
     height: "100%",
@@ -39,7 +40,7 @@ export function Repositories() {
 
   switch (repository.state) {
     case "hasError":
-      setOrganization(params.orgs);
+      setOrganization(params.org);
       break;
     default:
       return (
@@ -69,42 +70,49 @@ export function Repositories() {
 
 export function PaginatedRepositories() {
   const params = useParams();
-  const location = useLocation();
-  const qs = queryString.parse(location.search);
+
+  const repository = useRecoilValueLoadable(getRepositories);
+  const link = repository?.contents?.link || "";
+  const pattern = /([0-9]+)/g;
+  const numbers = link.match(pattern) || [];
   const orgPage = {
-    organization: params?.organization,
-    page: qs?.page,
+    organization: numbers.length && numbers[0],
+    page: params?.page,
   };
-  const repository = useRecoilValue(getNextPageRepositories(orgPage));
+  const paginatedRepo = useRecoilValue(getNextPageRepositories(orgPage));
   const classes = useStyles();
   const [org, setOrganization] = useRecoilState(organization);
 
-  switch (repository.state) {
-    case "hasError":
-      setOrganization(params.organization);
-      break;
-    default:
-      return (
-        <React.Suspense fallback={<></>}>
-          <Container className={classes.searchContainer}>
-            <Search clearable={true} />
-          </Container>
-          <Divider />
-          <Typography
-            className={classes.typography}
-            variant="body2"
-            color="textSecondary"
-            component="h2"
-          >
-            Repository Results for {org}
-          </Typography>
-          <Container className={classes.cardContainer} maxWidth="lg">
-            {repository?.content?.map((repo) => (
-              <RepoCard key={repo.name} {...repo} />
-            ))}
-          </Container>
-          <RepositoryPagination link={repository?.link} />
-        </React.Suspense>
-      );
+  if (repository?.state === "hasError" || paginatedRepo?.state === "hasError") {
+    setOrganization(params.org);
+    return null;
+  } else if (
+    repository?.state === "loading" ||
+    paginatedRepo?.state === "loading"
+  ) {
+    return <Progress />;
+  } else {
+    return (
+      <React.Suspense fallback={<></>}>
+        <Container className={classes.searchContainer}>
+          <Search clearable={true} />
+        </Container>
+        <Divider />
+        <Typography
+          className={classes.typography}
+          variant="body2"
+          color="textSecondary"
+          component="h2"
+        >
+          Repository Results for {org}
+        </Typography>
+        <Container className={classes.cardContainer} maxWidth="lg">
+          {paginatedRepo?.content?.map((repo) => (
+            <RepoCard key={repo.name} {...repo} />
+          ))}
+        </Container>
+        <RepositoryPagination link={paginatedRepo?.link} />
+      </React.Suspense>
+    );
   }
 }

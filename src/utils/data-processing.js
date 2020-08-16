@@ -1,4 +1,4 @@
-export const formatResponse = (response) => ({
+export const formatRepositoryResponse = (response) => ({
   link: response.link,
   content: response.map((repo) => ({
     name: repo.name,

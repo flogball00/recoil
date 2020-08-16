@@ -1,6 +1,6 @@
 import { atom, selector, selectorFamily } from "recoil";
 import { githubClient } from "../utils/api";
-import { formatResponse } from "../utils/data-processing";
+import { formatRepositoryResponse } from "../utils/data-processing";
 
 export const organization = atom({
   key: "organization",
@@ -10,18 +10,24 @@ export const organization = atom({
 export const getInitialRepositories = selector({
   key: "initial_repositories",
   get: async ({ get }) => {
-    const response = await githubClient(`orgs/${get(organization)}/repos`);
-    return formatResponse(response);
+    const response = await githubClient(
+      `orgs/${get(organization)}/repos?direction=desc`
+    );
+    return formatRepositoryResponse(response);
   },
 });
 
 export const getNextPageRepositories = selectorFamily({
   key: "next_page _repositories",
   get: (organizationPage) => async () => {
-    const response = await githubClient(
-      `organizations/${organizationPage.organization}/repos?page=${organizationPage.page}`
-    );
-    return formatResponse(response);
+    try {
+      const response = await githubClient(
+        `organizations/${organizationPage.organization}/repos?direction=desc&page=${organizationPage.page}`
+      );
+      return formatRepositoryResponse(response);
+    } catch (e) {
+      console.log(e);
+    }
   },
 });
 

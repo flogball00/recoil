@@ -7,6 +7,7 @@ import { useRecoilState } from "recoil";
 import { organization } from "../state";
 import Container from "@material-ui/core/Container";
 import ClearIcon from "@material-ui/icons/Clear";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
   container: {
@@ -46,11 +47,13 @@ export default function Search(props) {
   const [inputOrg, setInputOrg] = useState(org);
   const classes = useStyles();
   const textInput = useRef(null);
+  const history = useHistory();
 
   const onSubmit = (e) => {
     console.log("click");
     e.preventDefault();
     setOrganization(inputOrg);
+    history.push(`/repositories/${inputOrg}`);
   };
   const handleClick = () => {
     setInputOrg("");

@@ -9,12 +9,12 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Route path="/organizations/:organization/repos">
+        <Route path="/repositories/:org/:page">
           <ErrorBoundary>
             <PaginatedRepositories />
           </ErrorBoundary>
         </Route>
-        <Route path="/repositories/:orgs">
+        <Route path="/repositories/:org">
           <ErrorBoundary>
             <Repositories />
           </ErrorBoundary>

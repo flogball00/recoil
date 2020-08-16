@@ -104,6 +104,9 @@ export default function RepoCard(props) {
           <VisibilityIcon />: {props.watchers}
         </IconButton>
         <IconButton disabled={true}>
+          Created: {new Date(props.created).toDateString()}
+        </IconButton>
+        <IconButton disabled={true}>
           Last Updated: {new Date(props.updated).toDateString()}
         </IconButton>
         <IconButton
