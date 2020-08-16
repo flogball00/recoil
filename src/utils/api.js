@@ -3,7 +3,6 @@ import { GITHUB_API_URL } from "../constants";
 function client(url, endpoint, { body, ...customConfig } = {}) {
   const headers = {
     "Content-Type": "application/json",
-    Authorization: "token a714cf4993a02b853a39f6255728892c07414b12",
   };
   const config = {
     method: body ? "POST" : "GET",
