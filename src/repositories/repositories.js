@@ -1,19 +1,13 @@
 import React from "react";
-import { getRepositories, organization, orgPage } from "../state";
-import {
-  useRecoilValueLoadable,
-  useRecoilState,
-  useSetRecoilState,
-} from "recoil";
+import { getRepositories, organization } from "../state";
+import { useRecoilValueLoadable, useRecoilState } from "recoil";
 import { useParams } from "react-router-dom";
 import Progress from "../progress";
 import RepoBase from "./repoBase";
-import { getOrgNumber } from "../utils/data-processing";
 
 export default function Repositories() {
   const repository = useRecoilValueLoadable(getRepositories);
   const params = useParams();
-  const setOrgPage = useSetRecoilState(orgPage);
   const [org, setOrganization] = useRecoilState(organization);
   if (
     //if someone just went to /repositories/:org need, set the org
@@ -24,9 +18,6 @@ export default function Repositories() {
     setOrganization(params.org);
     return <Progress />;
   }
-
-  //preset organization in orgPage state
-  setOrgPage({ organization: getOrgNumber(repository.contents?.link ?? "") });
 
   return (
     <RepoBase

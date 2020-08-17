@@ -26,9 +26,7 @@ export default function RepositoryPagination(props) {
   const [page, setPage] = useState(parseInt(params.page) || 1);
   const link = parse(props.link ?? "");
   const handleChange = (_, value) => {
-    const newOP = { ...op };
-    newOP.page = value;
-    setOrgPage(newOP);
+    setOrgPage({ ...op, page: value });
     setPage(value);
   };
   const getPageCount = (link) => {

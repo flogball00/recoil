@@ -2,39 +2,53 @@ import React, { useEffect } from "react";
 import "@testing-library/jest-dom/extend-expect";
 import { renderHook } from "@testing-library/react-hooks";
 import { useRecoilValue, RecoilRoot, useSetRecoilState } from "recoil";
-import { organization } from "..";
-// import { setupServer } from "msw/node";
+import { organization, orgPage, getRepositories } from "..";
 
-// const server = setupServer(
-//   rest.get("/repositories", (req, res, ctx) => {
-//     return res(ctx.json({ greeting: "hello there" }));
-//   })
-// );
-
-// beforeAll(() => server.listen());
-// afterEach(() => server.resetHandlers());
-// afterAll(() => server.close());
-
-it("renders welcome message", () => {
+it("returns the correct default value", () => {
   const { result } = renderHook(() => useRecoilValue(organization), {
     wrapper: RecoilRoot,
   });
   expect(result.current).toEqual("");
 });
 
-it("should return the length otherwise", async () => {
+it("should return the correct information", async () => {
   const query = "Hello World";
 
   const { result } = renderHook(
     () => {
-      // Set searchQueryState to "Hello World" so that we can test our selector.
-      // We can probably mock this out, too. But I haven't tested that.
       const setSearchQuery = useSetRecoilState(organization);
       useEffect(() => {
         setSearchQuery(query);
       }, [setSearchQuery]);
 
       return useRecoilValue(organization);
+    },
+    {
+      wrapper: RecoilRoot,
+    }
+  );
+
+  expect(result.current).toEqual(query);
+});
+
+it("returns the correct default value", () => {
+  const { result } = renderHook(() => useRecoilValue(orgPage), {
+    wrapper: RecoilRoot,
+  });
+  expect(result.current).toEqual({});
+});
+
+it("should return the correct information", async () => {
+  const query = { page: "Hello" };
+
+  const { result } = renderHook(
+    () => {
+      const setOrgPage = useSetRecoilState(orgPage);
+      useEffect(() => {
+        setOrgPage(query);
+      }, [setOrgPage]);
+
+      return useRecoilValue(orgPage);
     },
     {
       wrapper: RecoilRoot,

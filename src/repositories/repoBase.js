@@ -26,6 +26,7 @@ const useStyles = makeStyles({
   searchContainer: {
     textAlign: "center",
     padding: "10px 0",
+    marginBottom: "7px",
   },
   typography: {
     height: "100px",

@@ -1,6 +1,7 @@
 import { atom, selector } from "recoil";
 import { githubClient } from "../utils/api";
 import { formatRepositoryResponse } from "../utils/data-processing";
+import { getOrgNumber } from "../utils/data-processing";
 
 export const organization = atom({
   key: "organization",
@@ -12,13 +13,12 @@ export const orgPage = atom({
   default: {},
 });
 
-export const getNextPageRepositories = selector({
-  key: "next_page _repositories",
+export const getRepositories = selector({
+  key: "initial_repositories",
   get: async ({ get }) => {
-    const organizationPage = get(orgPage);
     try {
       const response = await githubClient(
-        `organizations/${organizationPage.organization}/repos?sort=updated&direction=desc&page=${organizationPage.page}`
+        `orgs/${get(organization)}/repos?sort=updated&direction=desc`
       );
       return formatRepositoryResponse(response);
     } catch (e) {
@@ -27,12 +27,17 @@ export const getNextPageRepositories = selector({
   },
 });
 
-export const getRepositories = selector({
-  key: "initial_repositories",
+export const getNextPageRepositories = selector({
+  key: "next_page _repositories",
   get: async ({ get }) => {
+    const orgPageInfo = get(orgPage);
     try {
+      const getRepoData = await githubClient(
+        `orgs/${orgPageInfo.org}/repos?sort=updated&direction=desc`
+      );
+      const orgNum = getOrgNumber(getRepoData.link);
       const response = await githubClient(
-        `orgs/${get(organization)}/repos?sort=updated&direction=desc`
+        `organizations/${orgNum}/repos?sort=updated&direction=desc&page=${orgPageInfo.page}`
       );
       return formatRepositoryResponse(response);
     } catch (e) {
