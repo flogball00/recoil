@@ -4,7 +4,7 @@ import Search from "../index";
 import { render, screen } from "@testing-library/react";
 import { RecoilRoot } from "recoil";
 
-it("renders header message", () => {
+it("renders search input", () => {
   render(
     <RecoilRoot>
       <Search />

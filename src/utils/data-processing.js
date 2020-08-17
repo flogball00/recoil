@@ -27,7 +27,7 @@ export const formatCommitResponse = (response) => {
 
 export const formatDescription = (description) => {
   if (description?.length > 1000) {
-    return description.substring(0, 997) + "...";
+    return description.substring(0, 1050) + "...";
   }
   return description || "No Description Provided";
 };
