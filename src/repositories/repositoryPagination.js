@@ -5,6 +5,8 @@ import Container from "@material-ui/core/Container";
 import { Link, useParams } from "react-router-dom";
 import PaginationItem from "@material-ui/lab/PaginationItem";
 import parse from "parse-link-header";
+import { orgPage } from "../state";
+import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles({
   container: {
@@ -19,9 +21,15 @@ const useStyles = makeStyles({
 export default function RepositoryPagination(props) {
   const classes = useStyles();
   const params = useParams();
+  const [op, setOrgPage] = useRecoilState(orgPage);
+
   const [page, setPage] = React.useState(parseInt(params.page) || 1);
   const link = parse(props.link ?? "");
   const handleChange = (_, value) => {
+    const newOP = { ...op };
+    newOP.page = value;
+    console.log(newOP);
+    setOrgPage(newOP);
     setPage(value);
   };
   const getPageCount = () => {

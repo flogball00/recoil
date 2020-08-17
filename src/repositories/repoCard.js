@@ -21,7 +21,11 @@ import { githubClient } from "../utils/api";
 import Progress from "../progress";
 import NotFound from "../notFound";
 import TimelineDisplay from "./timeline";
-import { formatCommitResponse } from "../utils/data-processing";
+import {
+  formatCommitResponse,
+  formatDescription,
+} from "../utils/data-processing";
+
 const useStyles = makeStyles((theme) =>
   createStyles({
     root: {
@@ -77,6 +81,7 @@ export default function RepoCard(props) {
     !expanded && fetchData();
     setExpanded(!expanded);
   };
+
   return (
     <Card variant="outlined" className={classes.root}>
       <CardHeader
@@ -112,7 +117,7 @@ export default function RepoCard(props) {
           color="textSecondary"
           component="p"
         >
-          {props.description ?? "No Description Available"}
+          {formatDescription(props.description)}
         </Typography>
       </CardContent>
       <Divider />

@@ -7,6 +7,11 @@ export const organization = atom({
   default: "",
 });
 
+export const orgPage = atom({
+  key: "org_page",
+  default: {},
+});
+
 export const getInitialRepositories = selector({
   key: "initial_repositories",
   get: async ({ get }) => {
@@ -21,9 +26,10 @@ export const getInitialRepositories = selector({
   },
 });
 
-export const getNextPageRepositories = selectorFamily({
+export const getNextPageRepositories = selector({
   key: "next_page _repositories",
-  get: (organizationPage) => async () => {
+  get: async ({ get }) => {
+    const organizationPage = get(orgPage);
     try {
       const response = await githubClient(
         `organizations/${organizationPage.organization}/repos?direction=desc&page=${organizationPage.page}`

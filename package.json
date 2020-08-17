@@ -1,5 +1,5 @@
 {
-  "name": "netflix",
+  "name": "reposearch",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -37,5 +37,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@testing-library/react-hooks": "^3.4.1",
+    "msw": "^0.20.5",
+    "react-test-renderer": "^16.13.1"
   }
 }

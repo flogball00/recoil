@@ -64,8 +64,9 @@ export default function RepoBase(props) {
         Repository Results for {props.org}
       </Typography>
       <Container className={classes.cardContainer} maxWidth="lg">
-        {props.content?.map((repo) => <RepoCard key={repo.name} {...repo} />) ??
-          null}
+        {props.content?.map((repo) => (
+          <RepoCard key={repo.name} {...repo} />
+        )) ?? <></>}
       </Container>
       <RepositoryPagination link={props?.link} />
     </React.Suspense>
