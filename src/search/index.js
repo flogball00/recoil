@@ -70,6 +70,7 @@ export default function Search(props) {
         inputRef={textInput}
         variant="outlined"
         value={inputOrg}
+        placeholder="Enter Organization"
         onChange={(e) => setInputOrg(e.target.value)}
       ></TextField>
       {inputOrg.length && props.clearable ? (

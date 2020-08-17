@@ -12,7 +12,6 @@ const useStyles = makeStyles({
 
 export default function Progress() {
   const classes = useStyles();
-
   return (
     <Container className={classes.container} maxWidth="lg">
       <CircularProgress />

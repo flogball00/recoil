@@ -62,10 +62,10 @@ export default function RepoCard(props) {
   const [commitData, setData] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
+
   const fetchData = async () => {
     setIsLoading(true);
     setError(null);
-
     try {
       const resp = await githubClient(
         `repos/${params.org}/${props.name}/commits`
@@ -77,11 +77,11 @@ export default function RepoCard(props) {
       setIsLoading(false);
     }
   };
+
   const handleExpandClick = () => {
     !expanded && fetchData();
     setExpanded(!expanded);
   };
-
   return (
     <Card variant="outlined" className={classes.root}>
       <CardHeader
@@ -104,12 +104,6 @@ export default function RepoCard(props) {
         subheader={`Org: ${props.owner.login}`}
       />
       <Divider />
-
-      {/* <CardMedia
-        className={classes.media}
-        image="/static/images/cards/paella.jpg"
-        title="Paella dish"
-      /> */}
       <CardContent>
         <Typography
           className={classes.typography}
@@ -132,11 +126,9 @@ export default function RepoCard(props) {
           <VisibilityIcon />: {props.watchers}
         </IconButton>
         <IconButton disabled={true}>
-          Created: {new Date(props.created).toDateString()}
-        </IconButton>
-        <IconButton disabled={true}>
           Last Updated: {new Date(props.updated).toDateString()}
         </IconButton>
+        <IconButton disabled={true}>Language: {props.language}</IconButton>
         <IconButton
           className={clsx(classes.expand, {
             [classes.expandOpen]: expanded,
